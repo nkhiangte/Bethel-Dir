@@ -10,8 +10,8 @@ service cloud.firestore {
     // Fields:
     //   - name: string (required, min 1, max 100)
     //   - houseNumber: string (required, min 1, max 50)
-    //   - block: string (required, min 1, max 50)
-    //   - phoneNumber: string (required, min 1, max 20)
+    //   - block: string (optional, max 50)
+    //   - phoneNumber: string (optional, max 20)
     //   - landmark: string (optional, max 200)
     //   - createdAt: timestamp (required, immutable)
     //   - updatedAt: timestamp (required)
@@ -46,8 +46,8 @@ service cloud.firestore {
              data.keys().hasOnly(['name', 'houseNumber', 'block', 'phoneNumber', 'landmark', 'createdAt', 'updatedAt', 'createdBy']) &&
              data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
              data.houseNumber is string && data.houseNumber.size() > 0 && data.houseNumber.size() <= 50 &&
-             data.block is string && data.block.size() > 0 && data.block.size() <= 50 &&
-             data.phoneNumber is string && data.phoneNumber.size() > 0 && data.phoneNumber.size() <= 20 &&
+             data.block is string && data.block.size() <= 50 &&
+             data.phoneNumber is string && data.phoneNumber.size() <= 20 &&
              data.landmark is string && data.landmark.size() <= 200 &&
              data.createdAt is timestamp &&
              data.updatedAt is timestamp &&

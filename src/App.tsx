@@ -244,38 +244,36 @@ const ResidentForm = ({
                 placeholder="e.g. Lalramchhana"
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-blue-500 uppercase tracking-widest mb-2 ml-1">House No</label>
-                <input 
-                  required
-                  value={formData.houseNumber}
-                  onChange={e => setFormData({ ...formData, houseNumber: e.target.value })}
-                  className="w-full px-4 py-3 bg-blue-800 border border-blue-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-blue-800 text-white transition-all outline-none"
-                  placeholder="e.g. B-42"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-blue-500 uppercase tracking-widest mb-2 ml-1">House No</label>
+                  <input 
+                    required
+                    value={formData.houseNumber}
+                    onChange={e => setFormData({ ...formData, houseNumber: e.target.value })}
+                    className="w-full px-4 py-3 bg-blue-800 border border-blue-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-blue-800 text-white transition-all outline-none"
+                    placeholder="e.g. B-42"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-blue-500 uppercase tracking-widest mb-2 ml-1">Block (Optional)</label>
+                  <input 
+                    value={formData.block}
+                    onChange={e => setFormData({ ...formData, block: e.target.value })}
+                    className="w-full px-4 py-3 bg-blue-800 border border-blue-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-blue-800 text-white transition-all outline-none"
+                    placeholder="e.g. 1"
+                  />
+                </div>
               </div>
               <div>
-                <label className="block text-xs font-bold text-blue-500 uppercase tracking-widest mb-2 ml-1">Block</label>
+                <label className="block text-xs font-bold text-blue-500 uppercase tracking-widest mb-2 ml-1">Phone Number (Optional)</label>
                 <input 
-                  required
-                  value={formData.block}
-                  onChange={e => setFormData({ ...formData, block: e.target.value })}
+                  value={formData.phoneNumber}
+                  onChange={e => setFormData({ ...formData, phoneNumber: e.target.value })}
                   className="w-full px-4 py-3 bg-blue-800 border border-blue-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-blue-800 text-white transition-all outline-none"
-                  placeholder="e.g. 1"
+                  placeholder="e.g. 9876543210"
                 />
               </div>
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-blue-500 uppercase tracking-widest mb-2 ml-1">Phone Number</label>
-              <input 
-                required
-                value={formData.phoneNumber}
-                onChange={e => setFormData({ ...formData, phoneNumber: e.target.value })}
-                className="w-full px-4 py-3 bg-blue-800 border border-blue-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-blue-800 text-white transition-all outline-none"
-                placeholder="e.g. 9876543210"
-              />
-            </div>
 
             <div>
               <label className="block text-xs font-bold text-blue-500 uppercase tracking-widest mb-2 ml-1">Landmark (Optional)</label>
@@ -419,9 +417,9 @@ function DirectoryApp() {
           const phoneNumber = String(row.phoneNumber || row.PhoneNumber || row['Phone Number'] || row.Phone || '').trim();
           const landmark = String(row.landmark || row.Landmark || '').trim();
 
-          // Skip rows without a name or other required fields
-          if (!name || !houseNumber || !block || !phoneNumber) {
-            console.warn("Skipping row due to missing required fields:", row);
+          // Skip rows without a name or house number
+          if (!name || !houseNumber) {
+            console.warn("Skipping row due to missing required fields (Name/House No):", row);
             return; 
           }
 
@@ -440,7 +438,7 @@ function DirectoryApp() {
         });
 
         if (count === 0) {
-          alert("No valid entries found to import. Please ensure the Excel file has columns for Name, House No, Block, and Phone Number.");
+          alert("No valid entries found to import. Please ensure the Excel file has columns for Name and House No.");
           setLoading(false);
           return;
         }
