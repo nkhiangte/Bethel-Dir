@@ -410,12 +410,16 @@ function DirectoryApp() {
         const residentsRef = collection(db, 'residents_v1');
         let count = 0;
 
-        data.forEach((row) => {
+        data.forEach((row, index) => {
           const name = String(row.name || row.Name || '').trim();
           const houseNumber = String(row.houseNumber || row.HouseNumber || row['House No'] || '').trim();
           const block = String(row.block || row.Block || '').trim();
           const phoneNumber = String(row.phoneNumber || row.PhoneNumber || row['Phone Number'] || row.Phone || '').trim();
           const landmark = String(row.landmark || row.Landmark || '').trim();
+
+          if (index < 3) {
+            console.log(`Importing row ${index}:`, { name, houseNumber, block, phoneNumber, landmark });
+          }
 
           // Skip rows without a name or house number
           if (!name || !houseNumber) {

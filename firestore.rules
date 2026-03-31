@@ -42,16 +42,12 @@ service cloud.firestore {
     }
 
     function isValidResident(data) {
-      return data.keys().hasAll(['name', 'houseNumber', 'block', 'phoneNumber', 'landmark', 'createdAt', 'updatedAt', 'createdBy']) &&
-             data.keys().hasOnly(['name', 'houseNumber', 'block', 'phoneNumber', 'landmark', 'createdAt', 'updatedAt', 'createdBy']) &&
-             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
-             data.houseNumber is string && data.houseNumber.size() > 0 && data.houseNumber.size() <= 50 &&
-             data.block is string && data.block.size() <= 50 &&
-             data.phoneNumber is string && data.phoneNumber.size() <= 20 &&
-             data.landmark is string && data.landmark.size() <= 200 &&
-             data.createdAt is timestamp &&
-             data.updatedAt is timestamp &&
-             data.createdBy is string;
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 200 &&
+             data.houseNumber is string && data.houseNumber.size() > 0 && data.houseNumber.size() <= 100 &&
+             (!('block' in data) || data.block is string) &&
+             (!('phoneNumber' in data) || data.phoneNumber is string) &&
+             (!('landmark' in data) || data.landmark is string) &&
+             (!('createdBy' in data) || data.createdBy is string);
     }
 
     function isValidUser(data) {
@@ -72,14 +68,8 @@ service cloud.firestore {
     match /residents_v1/{residentId} {
       // Publicly readable directory
       allow get, list: if true;
-      allow create: if isAdmin() && isValidResident(request.resource.data) && 
-                      request.resource.data.createdBy == request.auth.uid &&
-                      request.resource.data.createdAt == request.time &&
-                      request.resource.data.updatedAt == request.time;
-      allow update: if isAdmin() && isValidResident(request.resource.data) &&
-                      request.resource.data.createdBy == resource.data.createdBy &&
-                      request.resource.data.createdAt == resource.data.createdAt &&
-                      request.resource.data.updatedAt == request.time;
+      allow create: if isAdmin() && isValidResident(request.resource.data);
+      allow update: if isAdmin() && isValidResident(request.resource.data);
       allow delete: if isAdmin();
     }
 
