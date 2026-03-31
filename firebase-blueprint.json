@@ -1,0 +1,68 @@
+{
+  "entities": {
+    "Resident": {
+      "title": "Resident",
+      "description": "A resident entry in the Bethel Veng Champhai directory.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The full name of the resident."
+        },
+        "houseNumber": {
+          "type": "string",
+          "description": "The house number of the resident."
+        },
+        "block": {
+          "type": "string",
+          "description": "The block or section of the neighborhood."
+        },
+        "phoneNumber": {
+          "type": "string",
+          "description": "The contact phone number."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time the entry was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The time the entry was last updated."
+        },
+        "createdBy": {
+          "type": "string",
+          "description": "The UID of the admin who created this entry."
+        }
+      },
+      "required": ["name", "houseNumber", "block", "phoneNumber"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User profile and role information.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["admin", "user"]
+        }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/residents/{residentId}": {
+      "schema": "Resident",
+      "description": "Collection of residents in the directory."
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and roles."
+    }
+  }
+}

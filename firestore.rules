@@ -1,0 +1,93 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: residents_v1
+    // Document ID: auto-generated
+    // Fields:
+    //   - name: string (required, min 1, max 100)
+    //   - houseNumber: string (required, min 1, max 50)
+    //   - block: string (required, min 1, max 50)
+    //   - phoneNumber: string (required, min 1, max 20)
+    //   - createdAt: timestamp (required, immutable)
+    //   - updatedAt: timestamp (required)
+    //   - createdBy: string (required, immutable)
+    //
+    // Collection: users
+    // Document ID: auth.uid
+    // Fields:
+    //   - email: string (required, email format)
+    //   - role: string (required, enum: ['admin', 'user'])
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        (request.auth.token.email == "nkhiangte@gmail.com" && request.auth.token.email_verified == true)
+      );
+    }
+
+    function isValidResident(data) {
+      return data.keys().hasAll(['name', 'houseNumber', 'block', 'phoneNumber', 'createdAt', 'updatedAt', 'createdBy']) &&
+             data.keys().hasOnly(['name', 'houseNumber', 'block', 'phoneNumber', 'createdAt', 'updatedAt', 'createdBy']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.houseNumber is string && data.houseNumber.size() > 0 && data.houseNumber.size() <= 50 &&
+             data.block is string && data.block.size() > 0 && data.block.size() <= 50 &&
+             data.phoneNumber is string && data.phoneNumber.size() > 0 && data.phoneNumber.size() <= 20 &&
+             data.createdAt is timestamp &&
+             data.updatedAt is timestamp &&
+             data.createdBy is string;
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['email', 'role']) &&
+             data.keys().hasOnly(['email', 'role']) &&
+             data.email is string && data.email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$") &&
+             data.role in ['admin', 'user'];
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /test/connection {
+      allow read: if true;
+    }
+
+    match /residents_v1/{residentId} {
+      // Publicly readable directory
+      allow get, list: if true;
+      allow create: if isAdmin() && isValidResident(request.resource.data) && 
+                      request.resource.data.createdBy == request.auth.uid &&
+                      request.resource.data.createdAt == request.time &&
+                      request.resource.data.updatedAt == request.time;
+      allow update: if isAdmin() && isValidResident(request.resource.data) &&
+                      request.resource.data.createdBy == resource.data.createdBy &&
+                      request.resource.data.createdAt == resource.data.createdAt &&
+                      request.resource.data.updatedAt == request.time;
+      allow delete: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == userId && 
+                      isValidUser(request.resource.data) && 
+                      request.resource.data.role == 'user'; // Users can only create themselves as 'user'
+      allow update: if isAdmin() || (isAuthenticated() && request.auth.uid == userId && 
+                      isValidUser(request.resource.data) && 
+                      request.resource.data.role == resource.data.role); // Users can't change their own role
+    }
+  }
+}
