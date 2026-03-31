@@ -12,6 +12,7 @@ service cloud.firestore {
     //   - houseNumber: string (required, min 1, max 50)
     //   - block: string (required, min 1, max 50)
     //   - phoneNumber: string (required, min 1, max 20)
+    //   - landmark: string (optional, max 200)
     //   - createdAt: timestamp (required, immutable)
     //   - updatedAt: timestamp (required)
     //   - createdBy: string (required, immutable)
@@ -40,12 +41,13 @@ service cloud.firestore {
     }
 
     function isValidResident(data) {
-      return data.keys().hasAll(['name', 'houseNumber', 'block', 'phoneNumber', 'createdAt', 'updatedAt', 'createdBy']) &&
-             data.keys().hasOnly(['name', 'houseNumber', 'block', 'phoneNumber', 'createdAt', 'updatedAt', 'createdBy']) &&
+      return data.keys().hasAll(['name', 'houseNumber', 'block', 'phoneNumber', 'landmark', 'createdAt', 'updatedAt', 'createdBy']) &&
+             data.keys().hasOnly(['name', 'houseNumber', 'block', 'phoneNumber', 'landmark', 'createdAt', 'updatedAt', 'createdBy']) &&
              data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
              data.houseNumber is string && data.houseNumber.size() > 0 && data.houseNumber.size() <= 50 &&
              data.block is string && data.block.size() > 0 && data.block.size() <= 50 &&
              data.phoneNumber is string && data.phoneNumber.size() > 0 && data.phoneNumber.size() <= 20 &&
+             data.landmark is string && data.landmark.size() <= 200 &&
              data.createdAt is timestamp &&
              data.updatedAt is timestamp &&
              data.createdBy is string;

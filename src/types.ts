@@ -6,6 +6,7 @@ export interface Resident {
   houseNumber: string;
   block: string;
   phoneNumber: string;
+  landmark: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
   createdBy: string;

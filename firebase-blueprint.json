@@ -21,6 +21,10 @@
           "type": "string",
           "description": "The contact phone number."
         },
+        "landmark": {
+          "type": "string",
+          "description": "A nearby landmark to help find the house."
+        },
         "createdAt": {
           "type": "string",
           "format": "date-time",
