@@ -410,26 +410,41 @@ function DirectoryApp() {
         setLoading(true);
         const batch = writeBatch(db);
         const residentsRef = collection(db, 'residents_v1');
+        let count = 0;
 
         data.forEach((row) => {
+          const name = String(row.name || row.Name || '').trim();
+          if (!name) return; // Skip rows without a name
+
           const newDocRef = doc(residentsRef);
           batch.set(newDocRef, {
-            name: row.name || row.Name || '',
-            houseNumber: String(row.houseNumber || row.HouseNumber || row['House No'] || ''),
-            block: String(row.block || row.Block || ''),
-            phoneNumber: String(row.phoneNumber || row.PhoneNumber || row['Phone Number'] || row.Phone || ''),
-            landmark: String(row.landmark || row.Landmark || ''),
+            name: name,
+            houseNumber: String(row.houseNumber || row.HouseNumber || row['House No'] || '').trim(),
+            block: String(row.block || row.Block || '').trim(),
+            phoneNumber: String(row.phoneNumber || row.PhoneNumber || row['Phone Number'] || row.Phone || '').trim(),
+            landmark: String(row.landmark || row.Landmark || '').trim(),
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
             createdBy: user.uid
           });
+          count++;
         });
 
+        if (count === 0) {
+          alert("No valid entries found to import.");
+          setLoading(false);
+          return;
+        }
+
         await batch.commit();
-        alert(`Successfully imported ${data.length} entries!`);
-      } catch (error) {
+        alert(`Successfully imported ${count} entries!`);
+      } catch (error: any) {
         console.error("Import failed:", error);
-        alert("Import failed. Please check the file format.");
+        if (error.code === 'permission-denied') {
+          alert("Import failed: You don't have permission to perform this action. Please make sure you are logged in as an admin.");
+        } else {
+          alert("Import failed: " + (error.message || "Please check the file format."));
+        }
       } finally {
         setLoading(false);
         e.target.value = ''; // Reset input
