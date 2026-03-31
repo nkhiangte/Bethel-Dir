@@ -310,6 +310,7 @@ function DirectoryApp() {
   const [loading, setLoading] = useState(true);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [sortBy, setSortBy] = useState<'name' | 'houseNumber'>('name');
+  const [selectedResident, setSelectedResident] = useState<Resident | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -521,6 +522,9 @@ function DirectoryApp() {
     if (!window.confirm("Are you sure you want to delete this entry?")) return;
     try {
       await deleteDoc(doc(db, 'residents_v1', id));
+      if (selectedResident?.id === id) {
+        setSelectedResident(null);
+      }
     } catch (error) {
       handleFirestoreError(error, OperationType.DELETE, `residents_v1/${id}`);
     }
@@ -544,6 +548,13 @@ function DirectoryApp() {
       }
     });
   }, [residents, search, sortBy]);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (filteredResidents.length > 0) {
+      setSelectedResident(filteredResidents[0]);
+    }
+  };
 
   const isAdmin = userProfile?.role === 'admin' || user?.email === 'nkhiangte@gmail.com';
 
@@ -586,10 +597,10 @@ function DirectoryApp() {
   }
 
   return (
-    <div className="min-h-screen bg-blue-950 pb-20 text-white">
+    <div className="min-h-screen bg-blue-950 text-white flex flex-col">
       {/* Header */}
       <header className="bg-blue-900 border-b border-blue-800 sticky top-0 z-40 backdrop-blur-md bg-blue-900/80">
-        <div className="max-w-4xl mx-auto px-4 h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
               <UserIcon className="w-6 h-6 text-white" />
@@ -600,6 +611,30 @@ function DirectoryApp() {
             </div>
           </div>
           <div className="flex items-center gap-4">
+            {isAdmin && (
+              <div className="hidden md:flex gap-2">
+                <button 
+                  onClick={handleDownloadTemplate}
+                  className="p-2.5 bg-blue-800 text-blue-400 hover:text-indigo-400 rounded-xl transition-all"
+                  title="Download Import Template"
+                >
+                  <Download className="w-5 h-5" />
+                </button>
+                <label className="p-2.5 bg-blue-800 text-blue-400 hover:text-indigo-400 rounded-xl transition-all cursor-pointer">
+                  <FileUp className="w-5 h-5" />
+                  <input type="file" accept=".xlsx, .xls, .csv" className="hidden" onChange={handleImport} />
+                </label>
+                <button 
+                  onClick={() => {
+                    setEditingResident(undefined);
+                    setIsFormOpen(true);
+                  }}
+                  className="p-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all"
+                >
+                  <Plus className="w-5 h-5" />
+                </button>
+              </div>
+            )}
             {user ? (
               <>
                 <div className="hidden sm:block text-right">
@@ -631,128 +666,185 @@ function DirectoryApp() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 pt-8">
-        {/* Search and Action Bar */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-500" />
-            <input 
-              type="text"
-              placeholder="Search by name, house no, or block..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 bg-blue-900 border border-blue-800 rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium text-white placeholder:text-blue-600"
-            />
-          </div>
-          {isAdmin && (
-            <div className="flex flex-wrap gap-2">
-              <button 
-                onClick={handleDownloadTemplate}
-                className="px-4 py-4 bg-blue-900 border border-blue-800 text-blue-400 hover:text-indigo-400 rounded-2xl font-bold hover:bg-blue-800 transition-all flex items-center justify-center gap-2 active:scale-95 shrink-0"
-                title="Download Import Template"
-              >
-                <Download className="w-5 h-5" />
-                Template
-              </button>
-              <label className="px-6 py-4 bg-blue-900 border border-blue-800 text-blue-300 rounded-2xl font-bold hover:bg-blue-800 transition-all flex items-center justify-center gap-2 active:scale-95 shrink-0 cursor-pointer">
-                <FileUp className="w-5 h-5" />
-                Import
-                <input 
-                  type="file" 
-                  accept=".xlsx, .xls, .csv" 
-                  className="hidden" 
-                  onChange={handleImport}
-                />
-              </label>
-              <button 
-                onClick={() => {
-                  setEditingResident(undefined);
-                  setIsFormOpen(true);
+      <div className="flex-1 flex overflow-hidden">
+        {/* Main Area */}
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col items-center">
+          <div className="w-full max-w-2xl">
+            <form onSubmit={handleSearchSubmit} className="relative mb-12">
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-blue-500" />
+              <input 
+                type="text"
+                placeholder="Search by name, house no..."
+                value={search}
+                onChange={e => {
+                  setSearch(e.target.value);
+                  if (!e.target.value) setSelectedResident(null);
                 }}
-                className="px-6 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2 active:scale-95 shrink-0"
+                onFocus={() => {}}
+                className="w-full pl-16 pr-32 py-6 bg-blue-900 border border-blue-800 rounded-[2rem] focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium text-xl text-white placeholder:text-blue-600 shadow-2xl"
+              />
+              <button 
+                type="submit"
+                className="absolute right-3 top-1/2 -translate-y-1/2 px-6 py-3 bg-indigo-600 text-white rounded-[1.5rem] font-bold hover:bg-indigo-700 transition-all active:scale-95"
               >
-                <Plus className="w-5 h-5" />
-                Add Resident
+                Enter
               </button>
-            </div>
-          )}
-        </div>
 
-        {/* Sort Bar */}
-        <div className="flex items-center gap-3 mb-6 overflow-x-auto pb-2 scrollbar-hide">
-          <div className="flex items-center gap-2 text-blue-500 shrink-0">
-            <SortDesc className="w-4 h-4" />
-            <span className="text-[10px] font-bold uppercase tracking-widest">Sort By:</span>
-          </div>
-          <button 
-            onClick={() => setSortBy('name')}
-            className={cn(
-              "px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0",
-              sortBy === 'name' 
-                ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20" 
-                : "bg-blue-900 text-blue-400 border border-blue-800 hover:bg-blue-800"
-            )}
-          >
-            Name
-          </button>
-          <button 
-            onClick={() => setSortBy('houseNumber')}
-            className={cn(
-              "px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0",
-              sortBy === 'houseNumber' 
-                ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20" 
-                : "bg-blue-900 text-blue-400 border border-blue-800 hover:bg-blue-800"
-            )}
-          >
-            House Number
-          </button>
-        </div>
+              {/* Search Suggestions */}
+              <AnimatePresence>
+                {search.length >= 2 && filteredResidents.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute top-full left-0 right-0 mt-2 bg-blue-900 border border-blue-800 rounded-2xl shadow-2xl z-50 overflow-hidden max-h-60 overflow-y-auto"
+                  >
+                    {filteredResidents.slice(0, 8).map((r) => (
+                      <button
+                        key={r.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedResident(r);
+                          setSearch(r.name);
+                        }}
+                        className="w-full text-left px-6 py-4 hover:bg-indigo-600/20 transition-colors border-b border-blue-800/50 last:border-0 flex justify-between items-center"
+                      >
+                        <div>
+                          <p className="font-bold text-white">{r.name}</p>
+                          <p className="text-xs text-blue-500">House No: {r.houseNumber}</p>
+                        </div>
+                        <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Select</span>
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </form>
 
-        {/* Stats */}
-        <div className="flex gap-4 mb-8 overflow-x-auto pb-2 scrollbar-hide">
-          <div className="bg-blue-900 px-6 py-4 rounded-2xl border border-blue-800 min-w-[140px]">
-            <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">Total Residents</p>
-            <p className="text-2xl font-black text-white">{residents.length}</p>
-          </div>
-          <div className="bg-blue-900 px-6 py-4 rounded-2xl border border-blue-800 min-w-[140px]">
-            <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">Results Found</p>
-            <p className="text-2xl font-black text-indigo-400">{filteredResidents.length}</p>
-          </div>
-        </div>
+            <AnimatePresence mode="wait">
+              {selectedResident ? (
+                <motion.div
+                  key={selectedResident.id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="bg-blue-900 rounded-[2.5rem] border border-blue-800 p-8 md:p-12 shadow-2xl relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
+                  
+                  <div className="relative z-10">
+                    <div className="flex justify-between items-start mb-8">
+                      <div>
+                        <h2 className="text-4xl font-black text-white mb-2 tracking-tight">{selectedResident.name}</h2>
+                        <div className="flex items-center gap-2">
+                          <span className="px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-xs font-bold uppercase tracking-widest">
+                            Block {selectedResident.block || 'N/A'}
+                          </span>
+                        </div>
+                      </div>
+                      {isAdmin && (
+                        <div className="flex gap-2">
+                          <button 
+                            onClick={() => {
+                              setEditingResident(selectedResident);
+                              setIsFormOpen(true);
+                            }}
+                            className="p-3 bg-blue-800 text-blue-300 hover:text-indigo-400 rounded-xl transition-all"
+                          >
+                            <Edit2 className="w-5 h-5" />
+                          </button>
+                          <button 
+                            onClick={() => selectedResident.id && handleDeleteResident(selectedResident.id)}
+                            className="p-3 bg-blue-800 text-blue-300 hover:text-red-400 rounded-xl transition-all"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
 
-        {/* List */}
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-4">
-            <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
-            <p className="text-sm font-bold text-blue-500 uppercase tracking-widest">Loading directory...</p>
-          </div>
-        ) : filteredResidents.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <AnimatePresence mode="popLayout">
-              {filteredResidents.map(resident => (
-                <ResidentCard 
-                  key={resident.id}
-                  resident={resident}
-                  isAdmin={isAdmin}
-                  onEdit={(r) => {
-                    setEditingResident(r);
-                    setIsFormOpen(true);
-                  }}
-                  onDelete={handleDeleteResident}
-                />
-              ))}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                      <div className="space-y-6">
+                        <div>
+                          <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-2">House Number</p>
+                          <p className="text-2xl font-bold text-white">{selectedResident.houseNumber}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-2">Phone Number</p>
+                          <p className="text-2xl font-bold text-white">{selectedResident.phoneNumber || 'N/A'}</p>
+                        </div>
+                      </div>
+                      <div className="space-y-6">
+                        <div>
+                          <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-2">Landmark</p>
+                          <p className="text-lg text-blue-200 italic">
+                            {selectedResident.landmark ? `Near ${selectedResident.landmark}` : 'No landmark provided'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {selectedResident.phoneNumber && (
+                      <div className="grid grid-cols-2 gap-4">
+                        <button 
+                          onClick={() => window.location.href = `tel:${selectedResident.phoneNumber}`}
+                          className="flex items-center justify-center gap-3 py-5 bg-indigo-600 text-white rounded-2xl font-bold text-lg hover:bg-indigo-700 transition-all active:scale-95 shadow-xl shadow-indigo-500/20"
+                        >
+                          <PhoneCall className="w-6 h-6" />
+                          Call Now
+                        </button>
+                        <button 
+                          onClick={() => {
+                            const cleanPhone = selectedResident.phoneNumber.replace(/\D/g, '');
+                            window.open(`https://wa.me/${cleanPhone}`, '_blank');
+                          }}
+                          className="flex items-center justify-center gap-3 py-5 bg-emerald-600 text-white rounded-2xl font-bold text-lg hover:bg-emerald-700 transition-all active:scale-95 shadow-xl shadow-emerald-500/20"
+                        >
+                          <MessageCircle className="w-6 h-6" />
+                          WhatsApp
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              ) : (
+                <div className="text-center py-32">
+                  <div className="w-24 h-24 bg-blue-900 rounded-[2rem] flex items-center justify-center mx-auto mb-6 border border-blue-800">
+                    <Search className="w-10 h-10 text-blue-700" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Search for a resident</h3>
+                  <p className="text-blue-500">Enter a name or house number to see details</p>
+                </div>
+              )}
             </AnimatePresence>
           </div>
-        ) : (
-          <div className="text-center py-20 bg-blue-900 rounded-[2.5rem] border border-dashed border-blue-800">
-            <div className="w-16 h-16 bg-blue-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Search className="w-8 h-8 text-blue-700" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-1">No residents found</h3>
-            <p className="text-sm text-blue-500 font-medium">Try searching with a different term</p>
+        </main>
+
+        {/* Right Sidebar - Names List */}
+        <aside className="w-80 bg-blue-900/50 border-l border-blue-800 flex flex-col hidden lg:flex">
+          <div className="p-6 border-b border-blue-800 flex justify-between items-center">
+            <h3 className="text-xs font-bold text-blue-500 uppercase tracking-widest">Resident List</h3>
+            <span className="text-[10px] font-bold bg-blue-800 px-2 py-1 rounded text-blue-400">
+              {filteredResidents.length}
+            </span>
           </div>
-        )}
-      </main>
+          <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-800 scrollbar-track-transparent">
+            {filteredResidents.map((r) => (
+              <button
+                key={r.id}
+                onClick={() => setSelectedResident(r)}
+                className={cn(
+                  "w-full text-left px-6 py-4 transition-all border-b border-blue-800/50 hover:bg-blue-800/50",
+                  selectedResident?.id === r.id ? "bg-indigo-600/20 border-l-4 border-l-indigo-500 text-white" : "text-blue-300"
+                )}
+              >
+                <p className="font-bold text-sm truncate">{r.name}</p>
+                <p className="text-[10px] opacity-60 truncate">{r.houseNumber}</p>
+              </button>
+            ))}
+          </div>
+        </aside>
+      </div>
 
       {/* Form Modal */}
       <AnimatePresence>
@@ -764,13 +856,6 @@ function DirectoryApp() {
           />
         )}
       </AnimatePresence>
-
-      {/* Footer Info */}
-      <footer className="max-w-4xl mx-auto px-4 mt-12 text-center">
-        <p className="text-[10px] font-bold text-blue-700 uppercase tracking-[0.2em]">
-          Bethel Veng Champhai • Community Directory System
-        </p>
-      </footer>
     </div>
   );
 }
