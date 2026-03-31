@@ -414,15 +414,24 @@ function DirectoryApp() {
 
         data.forEach((row) => {
           const name = String(row.name || row.Name || '').trim();
-          if (!name) return; // Skip rows without a name
+          const houseNumber = String(row.houseNumber || row.HouseNumber || row['House No'] || '').trim();
+          const block = String(row.block || row.Block || '').trim();
+          const phoneNumber = String(row.phoneNumber || row.PhoneNumber || row['Phone Number'] || row.Phone || '').trim();
+          const landmark = String(row.landmark || row.Landmark || '').trim();
+
+          // Skip rows without a name or other required fields
+          if (!name || !houseNumber || !block || !phoneNumber) {
+            console.warn("Skipping row due to missing required fields:", row);
+            return; 
+          }
 
           const newDocRef = doc(residentsRef);
           batch.set(newDocRef, {
             name: name,
-            houseNumber: String(row.houseNumber || row.HouseNumber || row['House No'] || '').trim(),
-            block: String(row.block || row.Block || '').trim(),
-            phoneNumber: String(row.phoneNumber || row.PhoneNumber || row['Phone Number'] || row.Phone || '').trim(),
-            landmark: String(row.landmark || row.Landmark || '').trim(),
+            houseNumber: houseNumber,
+            block: block,
+            phoneNumber: phoneNumber,
+            landmark: landmark,
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
             createdBy: user.uid
@@ -431,7 +440,7 @@ function DirectoryApp() {
         });
 
         if (count === 0) {
-          alert("No valid entries found to import.");
+          alert("No valid entries found to import. Please ensure the Excel file has columns for Name, House No, Block, and Phone Number.");
           setLoading(false);
           return;
         }
@@ -441,7 +450,12 @@ function DirectoryApp() {
       } catch (error: any) {
         console.error("Import failed:", error);
         if (error.code === 'permission-denied') {
-          alert("Import failed: You don't have permission to perform this action. Please make sure you are logged in as an admin.");
+          // Check if the user is actually an admin client-side
+          if (isAdmin) {
+            alert("Import failed: Data validation error. Please check that all required fields are present and follow the correct format.");
+          } else {
+            alert("Import failed: You don't have permission to perform this action. Please make sure you are logged in as an admin.");
+          }
         } else {
           alert("Import failed: " + (error.message || "Please check the file format."));
         }
