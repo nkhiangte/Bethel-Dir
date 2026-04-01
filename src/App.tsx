@@ -74,13 +74,13 @@ class ErrorBoundary extends (Component as any) {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-blue-950 p-4">
-          <div className="max-w-md w-full bg-blue-900 rounded-2xl shadow-xl p-8 text-center border border-blue-800">
-            <div className="w-16 h-16 bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
+        <div className="min-h-screen flex items-center justify-center bg-black p-4">
+          <div className="max-w-md w-full bg-zinc-900 rounded-2xl shadow-xl p-8 text-center border border-zinc-800">
+            <div className="w-16 h-16 bg-red-950/40 rounded-full flex items-center justify-center mx-auto mb-6">
               <X className="w-8 h-8 text-red-400" />
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">Something went wrong</h1>
-            <p className="text-blue-400 mb-6">
+            <p className="text-zinc-400 mb-6">
               {(this.state as any).error?.message || "An unexpected error occurred."}
             </p>
             <button 
@@ -125,25 +125,25 @@ const ResidentCard: React.FC<ResidentCardProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="bg-blue-900 rounded-2xl border border-blue-800 p-5 hover:border-indigo-500/50 transition-all group relative"
+      className="bg-zinc-900 rounded-2xl border border-zinc-800 p-5 hover:border-indigo-500/50 transition-all group relative"
     >
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="text-lg font-bold text-white group-hover:text-indigo-400 transition-colors">{resident.name}</h3>
-          <p className="text-sm text-blue-400 font-medium">House No: {resident.houseNumber}</p>
+          <p className="text-sm text-zinc-400 font-medium">House No: {resident.houseNumber}</p>
         </div>
         <div className="bg-indigo-500/10 text-indigo-300 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
           Block {resident.block}
         </div>
       </div>
 
-      <div className="flex items-center gap-3 text-blue-300 mb-2">
+      <div className="flex items-center gap-3 text-zinc-300 mb-2">
         <Phone className="w-4 h-4 text-indigo-400" />
         <span className="text-sm font-medium tracking-wide">{resident.phoneNumber}</span>
       </div>
 
       {resident.landmark && (
-        <div className="flex items-center gap-3 text-blue-500 mb-6">
+        <div className="flex items-center gap-3 text-zinc-500 mb-6">
           <div className="w-4 h-4 flex items-center justify-center">
             <div className="w-1.5 h-1.5 rounded-full bg-indigo-500/50" />
           </div>
@@ -172,13 +172,13 @@ const ResidentCard: React.FC<ResidentCardProps> = ({
         <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
           <button 
             onClick={() => onEdit(resident)}
-            className="p-2 bg-blue-800/80 backdrop-blur-sm border border-blue-700 rounded-lg text-blue-300 hover:text-indigo-400 hover:border-indigo-500/50 transition-all"
+            className="p-2 bg-zinc-800/80 backdrop-blur-sm border border-zinc-700 rounded-lg text-zinc-300 hover:text-indigo-400 hover:border-indigo-500/50 transition-all"
           >
             <Edit2 className="w-4 h-4" />
           </button>
           <button 
             onClick={() => resident.id && onDelete(resident.id)}
-            className="p-2 bg-blue-800/80 backdrop-blur-sm border border-blue-700 rounded-lg text-blue-300 hover:text-red-400 hover:border-red-500/50 transition-all"
+            className="p-2 bg-zinc-800/80 backdrop-blur-sm border border-zinc-700 rounded-lg text-zinc-300 hover:text-red-400 hover:border-red-500/50 transition-all"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -221,66 +221,66 @@ const ResidentForm = ({
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-blue-900 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-blue-800"
+        className="bg-zinc-900 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-zinc-800"
       >
         <div className="px-8 pt-8 pb-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-white">
               {resident ? 'Edit Resident' : 'Add Resident'}
             </h2>
-            <button onClick={onClose} className="p-2 hover:bg-blue-800 rounded-full transition-colors">
-              <X className="w-6 h-6 text-blue-500" />
+            <button onClick={onClose} className="p-2 hover:bg-zinc-800 rounded-full transition-colors">
+              <X className="w-6 h-6 text-zinc-500" />
             </button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs font-bold text-blue-500 uppercase tracking-widest mb-2 ml-1">Full Name</label>
+              <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2 ml-1">Full Name</label>
               <input 
                 required
                 value={formData.name}
                 onChange={e => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-3 bg-blue-800 border border-blue-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-blue-800 text-white transition-all outline-none"
+                className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-zinc-800 text-white transition-all outline-none"
                 placeholder="e.g. Lalramchhana"
               />
             </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-blue-500 uppercase tracking-widest mb-2 ml-1">House No</label>
+                  <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2 ml-1">House No</label>
                   <input 
                     required
                     value={formData.houseNumber}
                     onChange={e => setFormData({ ...formData, houseNumber: e.target.value })}
-                    className="w-full px-4 py-3 bg-blue-800 border border-blue-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-blue-800 text-white transition-all outline-none"
+                    className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-zinc-800 text-white transition-all outline-none"
                     placeholder="e.g. B-42"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-blue-500 uppercase tracking-widest mb-2 ml-1">Block (Optional)</label>
+                  <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2 ml-1">Block (Optional)</label>
                   <input 
                     value={formData.block}
                     onChange={e => setFormData({ ...formData, block: e.target.value })}
-                    className="w-full px-4 py-3 bg-blue-800 border border-blue-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-blue-800 text-white transition-all outline-none"
+                    className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-zinc-800 text-white transition-all outline-none"
                     placeholder="e.g. 1"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-bold text-blue-500 uppercase tracking-widest mb-2 ml-1">Phone Number (Optional)</label>
+                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2 ml-1">Phone Number (Optional)</label>
                 <input 
                   value={formData.phoneNumber}
                   onChange={e => setFormData({ ...formData, phoneNumber: e.target.value })}
-                  className="w-full px-4 py-3 bg-blue-800 border border-blue-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-blue-800 text-white transition-all outline-none"
+                  className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-zinc-800 text-white transition-all outline-none"
                   placeholder="e.g. 9876543210"
                 />
               </div>
 
             <div>
-              <label className="block text-xs font-bold text-blue-500 uppercase tracking-widest mb-2 ml-1">Landmark (Optional)</label>
+              <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2 ml-1">Landmark (Optional)</label>
               <input 
                 value={formData.landmark}
                 onChange={e => setFormData({ ...formData, landmark: e.target.value })}
-                className="w-full px-4 py-3 bg-blue-800 border border-blue-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-blue-800 text-white transition-all outline-none"
+                className="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-zinc-800 text-white transition-all outline-none"
                 placeholder="e.g. Near Baptist Church"
               />
             </div>
@@ -560,19 +560,19 @@ function DirectoryApp() {
 
   if (firestoreConnectionError) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-blue-950 p-4">
-        <div className="max-w-md w-full bg-blue-900 rounded-2xl shadow-xl p-8 text-center border border-blue-800">
-          <div className="w-16 h-16 bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
+      <div className="min-h-screen flex items-center justify-center bg-black p-4">
+        <div className="max-w-md w-full bg-zinc-900 rounded-2xl shadow-xl p-8 text-center border border-zinc-800">
+          <div className="w-16 h-16 bg-red-950/40 rounded-full flex items-center justify-center mx-auto mb-6">
             <X className="w-8 h-8 text-red-400" />
           </div>
           <h1 className="text-2xl font-bold text-white mb-2">Connection Error</h1>
-          <p className="text-blue-400 mb-6">
+          <p className="text-zinc-400 mb-6">
             {firestoreConnectionError.includes('the client is offline') 
               ? "Please check your Firebase configuration. The application is unable to reach the Firestore database."
               : `Firestore connection test failed: ${firestoreConnectionError}`}
           </p>
-          <div className="text-left bg-blue-950 p-4 rounded-xl mb-6 overflow-auto max-h-40 border border-blue-800">
-            <p className="text-xs font-mono text-blue-500 break-all">
+          <div className="text-left bg-black p-4 rounded-xl mb-6 overflow-auto max-h-40 border border-zinc-800">
+            <p className="text-xs font-mono text-zinc-500 break-all">
               Project ID: {auth.app.options.projectId}<br/>
               Auth Domain: {auth.app.options.authDomain}
             </p>
@@ -590,16 +590,16 @@ function DirectoryApp() {
 
   if (!isAuthReady) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-blue-950">
+      <div className="min-h-screen flex items-center justify-center bg-black">
         <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-blue-950 text-white flex flex-col">
+    <div className="min-h-screen bg-black text-white flex flex-col">
       {/* Header */}
-      <header className="bg-blue-900 border-b border-blue-800 sticky top-0 z-40 backdrop-blur-md bg-blue-900/80">
+      <header className="bg-zinc-900 border-b border-zinc-800 sticky top-0 z-40 backdrop-blur-md bg-black/80">
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
@@ -615,12 +615,12 @@ function DirectoryApp() {
               <div className="hidden md:flex gap-2">
                 <button 
                   onClick={handleDownloadTemplate}
-                  className="p-2.5 bg-blue-800 text-blue-400 hover:text-indigo-400 rounded-xl transition-all"
+                  className="p-2.5 bg-zinc-800 text-zinc-400 hover:text-indigo-400 rounded-xl transition-all"
                   title="Download Import Template"
                 >
                   <Download className="w-5 h-5" />
                 </button>
-                <label className="p-2.5 bg-blue-800 text-blue-400 hover:text-indigo-400 rounded-xl transition-all cursor-pointer">
+                <label className="p-2.5 bg-zinc-800 text-zinc-400 hover:text-indigo-400 rounded-xl transition-all cursor-pointer">
                   <FileUp className="w-5 h-5" />
                   <input type="file" accept=".xlsx, .xls, .csv" className="hidden" onChange={handleImport} />
                 </label>
@@ -639,11 +639,11 @@ function DirectoryApp() {
               <>
                 <div className="hidden sm:block text-right">
                   <p className="text-xs font-bold text-white">{user.displayName}</p>
-                  <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">{userProfile?.role}</p>
+                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{userProfile?.role}</p>
                 </div>
                 <button 
                   onClick={handleLogout}
-                  className="p-2.5 bg-blue-800 text-blue-400 hover:text-red-400 hover:bg-red-900/20 rounded-xl transition-all active:scale-95"
+                  className="p-2.5 bg-zinc-800 text-zinc-400 hover:text-red-400 hover:bg-red-950/40 rounded-xl transition-all active:scale-95"
                 >
                   <LogOut className="w-5 h-5" />
                 </button>
@@ -671,7 +671,7 @@ function DirectoryApp() {
         <main className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col items-center">
           <div className="w-full max-w-2xl">
             <form onSubmit={handleSearchSubmit} className="relative mb-12">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-blue-500" />
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-zinc-500" />
               <input 
                 type="text"
                 placeholder="Search by name, house no..."
@@ -681,7 +681,7 @@ function DirectoryApp() {
                   if (!e.target.value) setSelectedResident(null);
                 }}
                 onFocus={() => {}}
-                className="w-full pl-16 pr-32 py-6 bg-blue-900 border border-blue-800 rounded-[2rem] focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium text-xl text-white placeholder:text-blue-600 shadow-2xl"
+                className="w-full pl-16 pr-32 py-6 bg-zinc-900 border border-zinc-800 rounded-[2rem] focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium text-xl text-white placeholder:text-zinc-600 shadow-2xl"
               />
               <button 
                 type="submit"
@@ -697,7 +697,7 @@ function DirectoryApp() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute top-full left-0 right-0 mt-2 bg-blue-900 border border-blue-800 rounded-2xl shadow-2xl z-50 overflow-hidden max-h-60 overflow-y-auto"
+                    className="absolute top-full left-0 right-0 mt-2 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl z-50 overflow-hidden max-h-60 overflow-y-auto"
                   >
                     {filteredResidents.slice(0, 8).map((r) => (
                       <button
@@ -707,11 +707,11 @@ function DirectoryApp() {
                           setSelectedResident(r);
                           setSearch(r.name);
                         }}
-                        className="w-full text-left px-6 py-4 hover:bg-indigo-600/20 transition-colors border-b border-blue-800/50 last:border-0 flex justify-between items-center"
+                        className="w-full text-left px-6 py-4 hover:bg-indigo-600/20 transition-colors border-b border-zinc-800/50 last:border-0 flex justify-between items-center"
                       >
                         <div>
                           <p className="font-bold text-white">{r.name}</p>
-                          <p className="text-xs text-blue-500">House No: {r.houseNumber}</p>
+                          <p className="text-xs text-zinc-500">House No: {r.houseNumber}</p>
                         </div>
                         <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Select</span>
                       </button>
@@ -728,7 +728,7 @@ function DirectoryApp() {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="bg-blue-900 rounded-[2.5rem] border border-blue-800 p-8 md:p-12 shadow-2xl relative overflow-hidden"
+                  className="bg-zinc-900 rounded-[2.5rem] border border-zinc-800 p-8 md:p-12 shadow-2xl relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
                   
@@ -749,13 +749,13 @@ function DirectoryApp() {
                               setEditingResident(selectedResident);
                               setIsFormOpen(true);
                             }}
-                            className="p-3 bg-blue-800 text-blue-300 hover:text-indigo-400 rounded-xl transition-all"
+                            className="p-3 bg-zinc-800 text-zinc-300 hover:text-indigo-400 rounded-xl transition-all"
                           >
                             <Edit2 className="w-5 h-5" />
                           </button>
                           <button 
                             onClick={() => selectedResident.id && handleDeleteResident(selectedResident.id)}
-                            className="p-3 bg-blue-800 text-blue-300 hover:text-red-400 rounded-xl transition-all"
+                            className="p-3 bg-zinc-800 text-zinc-300 hover:text-red-400 rounded-xl transition-all"
                           >
                             <Trash2 className="w-5 h-5" />
                           </button>
@@ -766,18 +766,18 @@ function DirectoryApp() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                       <div className="space-y-6">
                         <div>
-                          <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-2">House Number</p>
+                          <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2">House Number</p>
                           <p className="text-2xl font-bold text-white">{selectedResident.houseNumber}</p>
                         </div>
                         <div>
-                          <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-2">Phone Number</p>
+                          <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2">Phone Number</p>
                           <p className="text-2xl font-bold text-white">{selectedResident.phoneNumber || 'N/A'}</p>
                         </div>
                       </div>
                       <div className="space-y-6">
                         <div>
-                          <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-2">Landmark</p>
-                          <p className="text-lg text-blue-200 italic">
+                          <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-2">Landmark</p>
+                          <p className="text-lg text-zinc-200 italic">
                             {selectedResident.landmark ? `Near ${selectedResident.landmark}` : 'No landmark provided'}
                           </p>
                         </div>
@@ -809,11 +809,11 @@ function DirectoryApp() {
                 </motion.div>
               ) : (
                 <div className="text-center py-32">
-                  <div className="w-24 h-24 bg-blue-900 rounded-[2rem] flex items-center justify-center mx-auto mb-6 border border-blue-800">
-                    <Search className="w-10 h-10 text-blue-700" />
+                  <div className="w-24 h-24 bg-zinc-900 rounded-[2rem] flex items-center justify-center mx-auto mb-6 border border-zinc-800">
+                    <Search className="w-10 h-10 text-zinc-700" />
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-2">Search for a resident</h3>
-                  <p className="text-blue-500">Enter a name or house number to see details</p>
+                  <p className="text-zinc-500">Enter a name or house number to see details</p>
                 </div>
               )}
             </AnimatePresence>
@@ -821,21 +821,21 @@ function DirectoryApp() {
         </main>
 
         {/* Right Sidebar - Names List */}
-        <aside className="w-80 bg-blue-900/50 border-l border-blue-800 flex flex-col hidden lg:flex">
-          <div className="p-6 border-b border-blue-800 flex justify-between items-center">
-            <h3 className="text-xs font-bold text-blue-500 uppercase tracking-widest">Resident List</h3>
-            <span className="text-[10px] font-bold bg-blue-800 px-2 py-1 rounded text-blue-400">
+        <aside className="w-80 bg-zinc-900/50 border-l border-zinc-800 flex flex-col hidden lg:flex">
+          <div className="p-6 border-b border-zinc-800 flex justify-between items-center">
+            <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Resident List</h3>
+            <span className="text-[10px] font-bold bg-zinc-800 px-2 py-1 rounded text-zinc-400">
               {filteredResidents.length}
             </span>
           </div>
-          <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-800 scrollbar-track-transparent">
+          <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
             {filteredResidents.map((r) => (
               <button
                 key={r.id}
                 onClick={() => setSelectedResident(r)}
                 className={cn(
-                  "w-full text-left px-6 py-4 transition-all border-b border-blue-800/50 hover:bg-blue-800/50",
-                  selectedResident?.id === r.id ? "bg-indigo-600/20 border-l-4 border-l-indigo-500 text-white" : "text-blue-300"
+                  "w-full text-left px-6 py-4 transition-all border-b border-zinc-800/50 hover:bg-zinc-800/50",
+                  selectedResident?.id === r.id ? "bg-indigo-600/20 border-l-4 border-l-indigo-500 text-white" : "text-zinc-300"
                 )}
               >
                 <p className="font-bold text-sm truncate">{r.name}</p>
