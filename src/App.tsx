@@ -607,7 +607,7 @@ function DirectoryApp() {
             </div>
             <div>
               <h1 className="text-xl font-black text-white tracking-tight leading-none mb-1">Bethel Veng</h1>
-              <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Champhai Directory</p>
+              <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Directory</p>
             </div>
           </div>
           <div className="flex items-center gap-4">

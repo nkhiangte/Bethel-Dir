@@ -2,7 +2,7 @@
   "entities": {
     "Resident": {
       "title": "Resident",
-      "description": "A resident entry in the Bethel Veng Champhai directory.",
+      "description": "A resident entry in the Bethel Veng directory.",
       "type": "object",
       "properties": {
         "name": {
